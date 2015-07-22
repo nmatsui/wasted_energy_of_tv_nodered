@@ -1,0 +1,739 @@
+[
+  {
+    "wires": [
+      [
+        "c0c482df.3f3b8",
+        "eb81929a.52cd"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "y": 112,
+    "x": 107,
+    "allFormats": false,
+    "allCommands": false,
+    "allEvents": true,
+    "deviceType": "+",
+    "applicationId": "",
+    "deviceId": "000000000000",
+    "inputType": "evt",
+    "apiKey": "",
+    "authentication": "boundService",
+    "type": "ibmiot in",
+    "id": "3e77d543.c1882a",
+    "eventType": "+",
+    "commandType": "",
+    "format": "json",
+    "name": "IBM IoT App In",
+    "service": "registered",
+    "allDevices": false,
+    "allApplications": false,
+    "allDeviceTypes": true
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "c0c482df.3f3b8",
+    "type": "debug",
+    "name": "IoT raw data",
+    "active": false,
+    "console": "false",
+    "complete": "payload",
+    "x": 343.5,
+    "y": 54
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "y": 112,
+    "x": 372,
+    "operation": "store",
+    "multi": false,
+    "id": "eb81929a.52cd",
+    "type": "mongodb out",
+    "service": "fixme",
+    "mongodb": "",
+    "name": "MongoDB save (data)",
+    "collection": "data",
+    "payonly": true,
+    "upsert": false
+  },
+  {
+    "wires": [
+      [
+        "81165d8f.457368"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "944b1709.257368",
+    "type": "http in",
+    "name": "Request for simple period",
+    "url": "/iot_data",
+    "method": "get",
+    "swaggerDoc": "",
+    "x": 138.83331298828125,
+    "y": 560.7777709960938
+  },
+  {
+    "wires": [
+      [
+        "4e53e4c0.cc315c",
+        "25a68735.cc7858"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "81165d8f.457368",
+    "type": "function",
+    "name": "Mongo Query",
+    "func": "msg.payload = {};\nvar qp = msg.req.query;\nvar q = {};\nq.$gte = qp.st;\nq.$lt = qp.ed;\nmsg.payload.time = q;\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 364.33331298828125,
+    "y": 560.7777709960938
+  },
+  {
+    "wires": [
+      [
+        "a82a3d26.54df08",
+        "e01651d.f4e3bb"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "y": 559.7777709960938,
+    "id": "4e53e4c0.cc315c",
+    "type": "mongodb in",
+    "service": "fixme",
+    "mongodb": "",
+    "name": "MongoDB find (data)",
+    "collection": "data",
+    "operation": "find",
+    "x": 597.3333129882812
+  },
+  {
+    "wires": [
+      [
+        "f8e0b838.1ab858"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "a82a3d26.54df08",
+    "type": "function",
+    "name": "aggregate count",
+    "func": "var count = msg.payload.length;\nvar sumOfVal = msg.payload.map(function(e) { return e.val}).reduce(function(v,e){ return e+v}, 0);\n\nmsg.payload = {};\nmsg.payload.count = count;\nmsg.payload.sumOfVal = sumOfVal;\n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 814.3333129882812,
+    "y": 559.7777709960938
+  },
+  {
+    "wires": [
+      [
+        "9c5a3793.6eccc8",
+        "adb2a4e8.3048c8"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "f8e0b838.1ab858",
+    "type": "template",
+    "name": "result json",
+    "field": "payload",
+    "format": "handlebars",
+    "template": "{\"count\":{{payload.count}}, \"val\":{{ payload.sumOfVal}}}",
+    "x": 992.3333129882812,
+    "y": 559.7777709960938
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "y": 559.7777709960938,
+    "x": 1192.3333129882812,
+    "name": "HTTP Response",
+    "type": "http response",
+    "id": "9c5a3793.6eccc8"
+  },
+  {
+    "wires": [
+      [
+        "ebeb274.af98f58"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "e1a92235.335c6",
+    "type": "http in",
+    "name": "Request for target day",
+    "url": "/day_data",
+    "method": "get",
+    "swaggerDoc": "",
+    "x": 126.33331298828125,
+    "y": 653.7777709960938
+  },
+  {
+    "wires": [
+      [
+        "52ad5054.718ce",
+        "b788fc06.32c5a"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "ebeb274.af98f58",
+    "type": "function",
+    "name": "Mongo Query",
+    "func": "msg.payload = {};\nvar qp = msg.req.query;\nvar q = {};\nq.$gte = qp.st;\nq.$lt = qp.ed;\nmsg.payload.time = q;\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 364.33331298828125,
+    "y": 653.7777709960938
+  },
+  {
+    "wires": [
+      [
+        "d043947b.0675c8",
+        "53265368.08e254"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "y": 654.7777709960938,
+    "id": "52ad5054.718ce",
+    "type": "mongodb in",
+    "service": "fixme",
+    "mongodb": "",
+    "name": "MongoDB find (data)",
+    "collection": "data",
+    "operation": "find",
+    "x": 599.3333129882812
+  },
+  {
+    "wires": [
+      [
+        "163a6cb5.ed1d4b",
+        "3b659b70.82fad4"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "d043947b.0675c8",
+    "type": "function",
+    "name": "aggregate every 2 minutes",
+    "func": "var INTERVAL = 2;\nvar results = [];\n\nif (msg.payload.length === 0) {\n    for (var i=0; i < 1440/2; i++) {\n        results.push({\"count\":0, \"val\":0});\n    }\n}\nelse {\n    var targetDate = new Date(msg.payload[0].time.match(/(\\d{4}-\\d{2}-\\d{2})T.+/)[1] + \"T00:00:00+09:00\");\n    var lastDate = new Date(targetDate);\n    lastDate.setDate(lastDate.getDate() + 1);\n    \n    var r = msg.payload.map(function(item){\n        return {\"t\":new Date(item.time), \"v\":item.val};\n    });\n    \n    do {\n        var nextDate = new Date(targetDate);\n        nextDate.setMinutes(nextDate.getMinutes() + INTERVAL);\n        var f = r.filter(function(item){\n            return targetDate <= item.t && item.t < nextDate;\n        }).map(function(item){\n            return item.v;\n        });\n        var count = f.length;\n        var val = f.reduce(function(prev, current){\n            return prev + current;\n        }, 0);\n        results.push({\"count\":count, \"val\":val});\n        targetDate = nextDate;\n    } while (nextDate < lastDate);\n}\nmsg.payload = JSON.stringify(results);\n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 848.7619018554688,
+    "y": 654.7777709960938
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "53265368.08e254",
+    "type": "debug",
+    "name": "MongoDB found",
+    "active": false,
+    "console": "false",
+    "complete": "payload",
+    "x": 817.6190795898438,
+    "y": 743.0634765625
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "y": 654.7777709960938,
+    "x": 1101.7615356445312,
+    "name": "HTTP Response",
+    "type": "http response",
+    "id": "3b659b70.82fad4"
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "163a6cb5.ed1d4b",
+    "type": "debug",
+    "name": "result",
+    "active": false,
+    "console": "false",
+    "complete": "payload",
+    "x": 1073.7619018554688,
+    "y": 743.7777709960938
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "e01651d.f4e3bb",
+    "type": "debug",
+    "name": "MongoDB found",
+    "active": false,
+    "console": "false",
+    "complete": "payload",
+    "x": 815.4761962890625,
+    "y": 483.920654296875
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "adb2a4e8.3048c8",
+    "type": "debug",
+    "name": "result",
+    "active": false,
+    "console": "false",
+    "complete": "payload",
+    "x": 1163.1902465820312,
+    "y": 483.4920654296875
+  },
+  {
+    "wires": [
+      [
+        "62998e8f.ce21c"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "y": 910.7777709960938,
+    "x": 106.33331298828125,
+    "once": false,
+    "id": "e14b8e7c.a89a9",
+    "type": "inject",
+    "name": "timer",
+    "topic": "timer",
+    "payload": "",
+    "payloadType": "none",
+    "repeat": "60",
+    "crontab": ""
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "y": 838.741943359375,
+    "x": 1964.333251953125,
+    "service": "registered",
+    "name": "IBM IoT App Out",
+    "data": "msg.payload",
+    "format": "json",
+    "id": "42b3e09c.3244f8",
+    "type": "ibmiot out",
+    "authentication": "boundService",
+    "apiKey": "",
+    "outputType": "cmd",
+    "deviceId": "000000000000",
+    "deviceType": "edison",
+    "eventCommandType": "notify"
+  },
+  {
+    "wires": [
+      [
+        "42b3e09c.3244f8"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "ed11f917.1aa96",
+    "type": "template",
+    "name": "result json",
+    "field": "payload",
+    "format": "handlebars",
+    "template": "{\"d\":{\"msg\":\"kill your tv\"}}",
+    "x": 1789.333251953125,
+    "y": 838.741943359375
+  },
+  {
+    "wires": [
+      [
+        "1b0b49e5.c39cce",
+        "7141cc8.730fc34"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "121fe696.03ec39",
+    "type": "function",
+    "name": "Mongo Query",
+    "func": "function formatISODate(dt) {\n    var yyyy = dt.getFullYear();\n    var mm = dt.getMonth() + 1;\n    var dd = dt.getDate();\n    var hh = dt.getHours();\n    var mi = dt.getMinutes();\n    var ss = dt.getSeconds();\n    var pad = function(num) {\n        var norm = Math.abs(Math.floor(num));\n        return (norm < 10 ? '0' : '') + norm;\n    };\n    var datestr = yyyy + \"-\" + pad(mm) + \"-\" + pad(dd);\n    var timestr = pad(hh) + \":\" + pad(mi) + \":\" + pad(ss);\n    return datestr + \"T\" + timestr + \"+09:00\";\n}\n\nvar period_minutes = msg.payload.period.minutes;\nvar d = new Date();\nd.setHours(d.getHours() + 9);\nvar ct = formatISODate(d);\n\nd.setMinutes(d.getMinutes() - period_minutes);\nvar pt = formatISODate(d);\n\nvar q = {};\nq.$gte = pt;\nq.$lte = ct;\n\nmsg.payload = {};\nmsg.payload.time = q;\n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 966.333251953125,
+    "y": 867.741943359375
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "1b0b49e5.c39cce",
+    "type": "debug",
+    "name": "query",
+    "active": true,
+    "console": "false",
+    "complete": "payload",
+    "x": 1127.333251953125,
+    "y": 935.741943359375
+  },
+  {
+    "wires": [
+      [
+        "ff90c841.990e28",
+        "e241051e.cbc028"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "y": 867.741943359375,
+    "id": "7141cc8.730fc34",
+    "type": "mongodb in",
+    "service": "fixme",
+    "mongodb": "",
+    "name": "MongoDB find",
+    "collection": "data",
+    "operation": "find",
+    "x": 1151.333251953125
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "25a68735.cc7858",
+    "type": "debug",
+    "name": "query",
+    "active": false,
+    "console": "false",
+    "complete": "payload",
+    "x": 552.3333129882812,
+    "y": 485.77777099609375
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "b788fc06.32c5a",
+    "type": "debug",
+    "name": "query",
+    "active": false,
+    "console": "false",
+    "complete": "payload",
+    "x": 556.3333129882812,
+    "y": 739.7777709960938
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "ff90c841.990e28",
+    "type": "debug",
+    "name": "MongoDB found",
+    "active": false,
+    "console": "false",
+    "complete": "payload",
+    "x": 1345.333251953125,
+    "y": 933.741943359375
+  },
+  {
+    "wires": [
+      [
+        "3864975a.7076",
+        "68a700cc.06f46"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "e241051e.cbc028",
+    "type": "function",
+    "name": "view avarage",
+    "func": "var BLANK_TIME_SEC = 20;\n\nvar lastTime = Math.max.apply(null, msg.payload.map(function(e) {\n    return new Date(e.time);\n}));\n\nvar count = msg.payload.length;\nvar sumOfVal = msg.payload.map(function(e) { return e.val; }).reduce(function(v,e){ return e+v; }, 0);\n\nmsg.payload = {};\nmsg.payload.lastTime = lastTime;\nmsg.payload.count = count;\nmsg.payload.sumOfVal = sumOfVal;\nif (count == 0 || (new Date()).getTime() - lastTime > BLANK_TIME_SEC * 1000) {\n    msg.payload.avarage = NaN;\n}\nelse {\n    msg.payload.avarage = sumOfVal/count;\n}\n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 1338.333251953125,
+    "y": 867.741943359375
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "3864975a.7076",
+    "type": "debug",
+    "name": "view avarage",
+    "active": false,
+    "console": "false",
+    "complete": "payload",
+    "x": 1565.333251953125,
+    "y": 932.741943359375
+  },
+  {
+    "wires": [
+      [
+        "88e70c2c.237b28",
+        "ed11f917.1aa96"
+      ],
+      [
+        "4390c1d9.2b50f"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "y": 867.741943359375,
+    "id": "68a700cc.06f46",
+    "type": "switch",
+    "name": "avarage check",
+    "property": "payload.avarage",
+    "rules": [
+      {
+        "v": "-1",
+        "t": "eq"
+      },
+      {
+        "t": "else"
+      }
+    ],
+    "checkall": "true",
+    "outputs": 2,
+    "x": 1569.333251953125
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "4390c1d9.2b50f",
+    "type": "debug",
+    "name": "average != -1",
+    "active": true,
+    "console": "false",
+    "complete": "payload",
+    "x": 1802.3331909179688,
+    "y": 913.7418823242188
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "88e70c2c.237b28",
+    "type": "debug",
+    "name": "avarege == -1",
+    "active": true,
+    "console": "false",
+    "complete": "payload",
+    "x": 1793.333251953125,
+    "y": 775.741943359375
+  },
+  {
+    "wires": [
+      [
+        "23b6ebeb.530204",
+        "59a34791.87b468"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "4bfae5d3.d7e744",
+    "type": "http in",
+    "name": "Request for config",
+    "url": "/config",
+    "method": "post",
+    "swaggerDoc": "",
+    "x": 119,
+    "y": 256
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "y": 290.142822265625,
+    "x": 646.7142333984375,
+    "operation": "update",
+    "multi": false,
+    "id": "7ef16730.f8c58",
+    "type": "mongodb out",
+    "service": "fixme",
+    "mongodb": "",
+    "name": "MongoDB update (config)",
+    "collection": "config",
+    "payonly": true,
+    "upsert": true
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "23b6ebeb.530204",
+    "type": "debug",
+    "name": "config raw data",
+    "active": false,
+    "console": "false",
+    "complete": "payload",
+    "x": 358,
+    "y": 190
+  },
+  {
+    "wires": [
+      [
+        "70ee00d1.5a6428"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "511e2e00.adc244",
+    "type": "template",
+    "name": "result json",
+    "field": "payload",
+    "format": "handlebars",
+    "template": "{\"received\":{{payload}}}",
+    "x": 598.8571166992188,
+    "y": 226.28570556640625
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "y": 226.28570556640625,
+    "x": 803.5712890625,
+    "name": "HTTP Response",
+    "type": "http response",
+    "id": "70ee00d1.5a6428"
+  },
+  {
+    "wires": [
+      [
+        "e3077bdb.2312f8",
+        "733e788e.0c3318"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "y": 910.7777709960938,
+    "id": "62998e8f.ce21c",
+    "type": "mongodb in",
+    "service": "fixme",
+    "mongodb": "",
+    "name": "MongoDB find (config)",
+    "collection": "config",
+    "operation": "find",
+    "x": 290.33331298828125
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "e3077bdb.2312f8",
+    "type": "debug",
+    "name": "MongoDB found(config)",
+    "active": true,
+    "console": "false",
+    "complete": "payload",
+    "x": 566.1904907226562,
+    "y": 1009.5631713867188
+  },
+  {
+    "wires": [
+      [
+        "d316701a.49849"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "603efcc3.3452c4",
+    "type": "http in",
+    "name": "Request for config",
+    "url": "/config",
+    "method": "get",
+    "swaggerDoc": "",
+    "x": 115.55552673339844,
+    "y": 411.7778015136719
+  },
+  {
+    "wires": [
+      [
+        "cf5f0a9e.36703",
+        "875c624.3f76b2"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "y": 411.7778015136719,
+    "id": "d316701a.49849",
+    "type": "mongodb in",
+    "service": "fixme",
+    "mongodb": "",
+    "name": "MongoDB find (config)",
+    "collection": "config",
+    "operation": "find",
+    "x": 372.0636901855469
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "cf5f0a9e.36703",
+    "type": "debug",
+    "name": "",
+    "active": false,
+    "console": "false",
+    "complete": "false",
+    "x": 617.6192321777344,
+    "y": 354.00006103515625
+  },
+  {
+    "wires": [
+      [
+        "c4acf862.6e5358"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "875c624.3f76b2",
+    "type": "function",
+    "name": "check config",
+    "func": "var result = {};\nif (msg.payload.length === 0) {\n    result = {\"period\":{\"enable\":false}};\n}\nelse {\n    result = (msg.payload)[0];\n}\n\nmsg.payload = {};\nmsg.payload = result;\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 619.9803161621094,
+    "y": 411.4444885253906
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "y": 411.4444274902344,
+    "x": 826.9644165039062,
+    "name": "HTTP Response",
+    "type": "http response",
+    "id": "c4acf862.6e5358"
+  },
+  {
+    "wires": [
+      [
+        "5114c87c.f8ddb"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "733e788e.0c3318",
+    "type": "function",
+    "name": "check config",
+    "func": "var result = {};\nif (msg.payload.length === 0) {\n    result = {\"period\":{\"enable\":false}};\n}\nelse {\n    result = (msg.payload)[0];\n}\n\nmsg.payload = {};\nmsg.payload = result;\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 531.6071166992188,
+    "y": 911.0713500976562
+  },
+  {
+    "wires": [
+      [
+        "121fe696.03ec39"
+      ],
+      [
+        "6cf07d8b.d38cd4"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "y": 911.0713500976562,
+    "id": "5114c87c.f8ddb",
+    "type": "switch",
+    "name": "period.enable check",
+    "property": "payload.period.enable",
+    "rules": [
+      {
+        "t": "true"
+      },
+      {
+        "t": "else"
+      }
+    ],
+    "checkall": "true",
+    "outputs": 2,
+    "x": 738.0357666015625
+  },
+  {
+    "wires": [],
+    "z": "6504b695.9c2a9",
+    "id": "6cf07d8b.d38cd4",
+    "type": "debug",
+    "name": "period.enable == false",
+    "active": true,
+    "console": "false",
+    "complete": "payload",
+    "x": 990,
+    "y": 1008.5709838867188
+  },
+  {
+    "wires": [
+      [
+        "7ef16730.f8c58",
+        "511e2e00.adc244"
+      ]
+    ],
+    "z": "6504b695.9c2a9",
+    "id": "59a34791.87b468",
+    "type": "function",
+    "name": "convert post data",
+    "func": "var enable = msg.payload.period.enable;\n\nmsg.payload.period.enable = (enable === \"true\") ? true : false;\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 359.9999694824219,
+    "y": 255.71429443359375
+  }
+]
